@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, ReactNode, useEffect } from 'react';
 import { User, Role, Product, CartItem, Sale, DiscountTier } from '../types';
 import { INITIAL_PRODUCTS, INITIAL_USERS, DEFAULT_PLACEHOLDER_IMAGE } from '../constants';
 
@@ -33,14 +33,43 @@ const initialDiscounts: DiscountTier[] = [
     { id: 'tier2', threshold: 400, percentage: 10 },
 ];
 
-export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    // Load from localStorage or use defaults
     const [user, setUser] = useState<User | null>(null);
-    const [users, setUsers] = useState<User[]>(INITIAL_USERS);
-    const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
-    const [cart, setCart] = useState<CartItem[]>([]);
-    const [sales, setSales] = useState<Sale[]>([]);
-    const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
-    const [discountTiers, setDiscountTiers] = useState<DiscountTier[]>(initialDiscounts);
+    const [users, setUsers] = useState<User[]>(() => {
+        const data = localStorage.getItem('users');
+        return data ? JSON.parse(data) : INITIAL_USERS;
+    });
+    const [products, setProducts] = useState<Product[]>(() => {
+        const data = localStorage.getItem('products');
+        return data ? JSON.parse(data) : INITIAL_PRODUCTS;
+    });
+    const [cart, setCart] = useState<CartItem[]>(() => {
+        const data = localStorage.getItem('cart');
+        return data ? JSON.parse(data) : [];
+    });
+    const [sales, setSales] = useState<Sale[]>(() => {
+        const data = localStorage.getItem('sales');
+        return data ? JSON.parse(data, (key, value) => {
+            if (key === 'date' && typeof value === 'string') return new Date(value);
+            return value;
+        }) : [];
+    });
+    const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(() => {
+        const data = localStorage.getItem('qrCodeUrl');
+        return data ? data : null;
+    });
+    const [discountTiers, setDiscountTiers] = useState<DiscountTier[]>(() => {
+        const data = localStorage.getItem('discountTiers');
+        return data ? JSON.parse(data) : initialDiscounts;
+    });
+
+    // Persist to localStorage on change
+    useEffect(() => { localStorage.setItem('users', JSON.stringify(users)); }, [users]);
+    useEffect(() => { localStorage.setItem('products', JSON.stringify(products)); }, [products]);
+    useEffect(() => { localStorage.setItem('cart', JSON.stringify(cart)); }, [cart]);
+    useEffect(() => { localStorage.setItem('sales', JSON.stringify(sales)); }, [sales]);
+    useEffect(() => { if (qrCodeUrl) { localStorage.setItem('qrCodeUrl', qrCodeUrl); } else { localStorage.removeItem('qrCodeUrl'); } }, [qrCodeUrl]);
+    useEffect(() => { localStorage.setItem('discountTiers', JSON.stringify(discountTiers)); }, [discountTiers]);
 
     const login = (userId: string, password?: string): boolean => {
         const foundUser = users.find(u => u.id === userId);
