@@ -1,0 +1,144 @@
+{
+  "header": {
+    "billing": "Billing",
+    "inventory": "Inventory",
+    "reports": "Reports",
+    "logout": "Logout"
+  },
+  "loginPage": {
+    "title": "Gusain बुज्जी Bhandar",
+    "subtitle": "Billing & Inventory System",
+    "selectUser": "Select User",
+    "chooseUser": "-- Choose a user --",
+    "loginButton": "Login",
+    "error": "Please select a user to login.",
+    "password": "Password",
+    "passwordPlaceholder": "Enter password...",
+    "passwordError": "Incorrect password for Admin."
+  },
+  "billingPage": {
+    "productsTitle": "Products",
+    "searchInputPlaceholder": "Scan or search product...",
+    "allCategory": "All",
+    "cartTitle": "Current Bill",
+    "cartEmpty": "Your cart is empty.",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "total": "Total",
+    "proceedToPayment": "Proceed to Payment",
+    "clearCart": "Clear Cart"
+  },
+  "productCard": {
+    "lowStock": "Low Stock",
+    "outOfStock": "Out of Stock",
+    "addToCartLabel": "Add {{productName}} to cart",
+    "outOfStockLabel": "{{productName}} is out of stock"
+  },
+  "weightModal": {
+    "title": "{{productName}}",
+    "priceLabel": "Price: ₹{{price}}/kg",
+    "weightInputLabel": "Enter weight (in grams)",
+    "weightInputPlaceholder": "e.g., 500",
+    "exceedsStock": "Weight exceeds available stock ({{stock}}g).",
+    "priceDisplay": "Price",
+    "cancel": "Cancel",
+    "addToCart": "Add to Cart"
+  },
+  "paymentModal": {
+    "title": "Complete Payment",
+    "totalDue": "Total Amount Due",
+    "selectMethod": "Select Payment Method",
+    "cash": "Cash",
+    "online": "Online",
+    "scanToPay": "Scan to Pay",
+    "qrNotConfigured": "QR Code not configured by admin.",
+    "qrInstruction": "After payment, click \"Finish Sale\" to complete the transaction.",
+    "finishSale": "Finish Sale",
+    "cancel": "Cancel"
+  },
+  "invoiceModal": {
+    "title": "Gusain बुज्जी Bhandar",
+    "address": "Your Store Address, City",
+    "invoiceLabel": "Invoice #{{invoiceId}}",
+    "item": "Item",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "grandTotal": "TOTAL",
+    "thankYou": "Thank you for shopping with us!",
+    "close": "Close",
+    "print": "Print / Save PDF"
+  },
+  "inventoryPage": {
+    "title": "Inventory Management",
+    "addNewProduct": "Add New Product",
+    "storeSettings": "Store Settings",
+    "qrCodeUrlLabel": "Payment QR Code Image URL",
+    "update": "Update",
+    "qrCodePreview": "Current QR Code Preview:",
+    "discountSettings": "Discount Settings",
+    "discountDescription": "Set automatic discounts based on subtotal. The highest applicable discount will be applied.",
+    "ifSubtotalOver": "If subtotal is over",
+    "giveA": "give a",
+    "discount": "discount",
+    "addTier": "Add Tier",
+    "saveDiscounts": "Save Discount Settings",
+    "userManagement": "User Management",
+    "addNewUser": "Add New User",
+    "product": "Product",
+    "category": "Category",
+    "price": "Price",
+    "stock": "Stock",
+    "actions": "Actions",
+    "edit": "Edit",
+    "deleteConfirm": "Are you sure you want to delete this product?",
+    "qrUpdateSuccess": "QR Code URL updated!",
+    "discountSaveSuccess": "Discount settings saved!",
+    "discountValidationError": "Threshold and Percentage must be greater than 0."
+  },
+  "userFormModal": {
+    "editTitle": "Edit User",
+    "addTitle": "Add New User",
+    "userName": "User Name",
+    "role": "Role",
+    "password": "Password",
+    "passwordHint": "Required for Admins. Leave blank to keep unchanged.",
+    "cancel": "Cancel",
+    "save": "Save User"
+  },
+  "productFormModal": {
+    "editTitle": "Edit Product",
+    "addTitle": "Add New Product",
+    "productName": "Product Name",
+    "productImage": "Product Image",
+    "pricePerKg": "Price (per Kg)",
+    "stockInGrams": "Stock (in grams)",
+    "category": "Category",
+    "cancel": "Cancel",
+    "save": "Save Product"
+  },
+  "reportsPage": {
+    "title": "Sales Reports",
+    "totalRevenue": "Total Revenue",
+    "totalWeightSold": "Total Weight Sold",
+    "avgSaleValue": "Average Sale Value",
+    "salesOverTime": "Sales Over Time",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "recentTransactions": "Recent Transactions",
+    "invoiceId": "Invoice ID",
+    "date": "Date",
+    "itemsCount": "Items Count",
+    "paymentMethod": "Payment Method",
+    "total": "Total"
+  },
+  "salesChart": {
+    "tooltipLabel": "Total Sales"
+  },
+  "categories": {
+    "Fruit": "Fruit",
+    "Vegetable": "Vegetable",
+    "Other": "Other"
+  }
+}

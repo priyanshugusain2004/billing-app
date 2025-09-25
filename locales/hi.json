@@ -1,0 +1,144 @@
+{
+  "header": {
+    "billing": "बिलिंग",
+    "inventory": "इन्वेंटरी",
+    "reports": "रिपोर्ट",
+    "logout": "लॉग आउट"
+  },
+  "loginPage": {
+    "title": "गुसाईं बुज्जी भंडार",
+    "subtitle": "बिलिंग और इन्वेंटरी सिस्टम",
+    "selectUser": "उपयोगकर्ता चुनें",
+    "chooseUser": "-- एक उपयोगकर्ता चुनें --",
+    "loginButton": "लॉग इन करें",
+    "error": "कृपया लॉग इन करने के लिए एक उपयोगकर्ता चुनें।",
+    "password": "पासवर्ड",
+    "passwordPlaceholder": "पासवर्ड दर्ज करें...",
+    "passwordError": "व्यवस्थापक के लिए गलत पासवर्ड।"
+  },
+  "billingPage": {
+    "productsTitle": "उत्पाद",
+    "searchInputPlaceholder": "उत्पाद स्कैन या खोजें...",
+    "allCategory": "सभी",
+    "cartTitle": "वर्तमान बिल",
+    "cartEmpty": "आपकी कार्ट खाली है।",
+    "subtotal": "उप-योग",
+    "discount": "छूट",
+    "total": "कुल",
+    "proceedToPayment": "भुगतान के लिए आगे बढ़ें",
+    "clearCart": "कार्ट साफ़ करें"
+  },
+  "productCard": {
+    "lowStock": "कम स्टॉक",
+    "outOfStock": "स्टॉक खत्म",
+    "addToCartLabel": "{{productName}} को कार्ट में जोड़ें",
+    "outOfStockLabel": "{{productName}} स्टॉक में नहीं है"
+  },
+  "weightModal": {
+    "title": "{{productName}}",
+    "priceLabel": "कीमत: ₹{{price}}/किग्रा",
+    "weightInputLabel": "वजन दर्ज करें (ग्राम में)",
+    "weightInputPlaceholder": "उदा., 500",
+    "exceedsStock": "वजन उपलब्ध स्टॉक ({{stock}}g) से अधिक है।",
+    "priceDisplay": "कीमत",
+    "cancel": "रद्द करें",
+    "addToCart": "कार्ट में जोड़ें"
+  },
+  "paymentModal": {
+    "title": "भुगतान पूरा करें",
+    "totalDue": "कुल देय राशि",
+    "selectMethod": "भुगतान विधि चुनें",
+    "cash": "नकद",
+    "online": "ऑनलाइन",
+    "scanToPay": "स्कैन करके भुगतान करें",
+    "qrNotConfigured": "व्यवस्थापक द्वारा QR कोड कॉन्फ़िगर नहीं किया गया है।",
+    "qrInstruction": "भुगतान के बाद, लेनदेन पूरा करने के लिए \"बिक्री समाप्त करें\" पर क्लिक करें।",
+    "finishSale": "बिक्री समाप्त करें",
+    "cancel": "रद्द करें"
+  },
+  "invoiceModal": {
+    "title": "गुसाईं बुज्जी भंडार",
+    "address": "आपकी दुकान का पता, शहर",
+    "invoiceLabel": "चालान #{{invoiceId}}",
+    "item": "वस्तु",
+    "total": "कुल",
+    "subtotal": "उप-योग",
+    "discount": "छूट",
+    "grandTotal": "कुल योग",
+    "thankYou": "हमारे साथ खरीदारी करने के लिए धन्यवाद!",
+    "close": "बंद करें",
+    "print": "प्रिंट / पीडीएफ सहेजें"
+  },
+  "inventoryPage": {
+    "title": "इन्वेंटरी प्रबंधन",
+    "addNewProduct": "नया उत्पाद जोड़ें",
+    "storeSettings": "स्टोर सेटिंग्स",
+    "qrCodeUrlLabel": "भुगतान QR कोड छवि URL",
+    "update": "अपडेट करें",
+    "qrCodePreview": "वर्तमान QR कोड पूर्वावलोकन:",
+    "discountSettings": "छूट सेटिंग्स",
+    "discountDescription": "उप-योग के आधार पर स्वचालित छूट सेट करें। सबसे अधिक लागू छूट लागू की जाएगी।",
+    "ifSubtotalOver": "यदि उप-योग इससे अधिक है",
+    "giveA": "तो दें",
+    "discount": "छूट",
+    "addTier": "टियर जोड़ें",
+    "saveDiscounts": "छूट सेटिंग्स सहेजें",
+    "userManagement": "उपयोगकर्ता प्रबंधन",
+    "addNewUser": "नया उपयोगकर्ता जोड़ें",
+    "product": "उत्पाद",
+    "category": "श्रेणी",
+    "price": "कीमत",
+    "stock": "स्टॉक",
+    "actions": "कार्रवाई",
+    "edit": "संपादित करें",
+    "deleteConfirm": "क्या आप वाकई इस उत्पाद को हटाना चाहते हैं?",
+    "qrUpdateSuccess": "QR कोड URL अपडेट किया गया!",
+    "discountSaveSuccess": "छूट सेटिंग्स सहेजी गईं!",
+    "discountValidationError": "सीमा और प्रतिशत 0 से अधिक होना चाहिए।"
+  },
+  "userFormModal": {
+    "editTitle": "उपयोगकर्ता संपादित करें",
+    "addTitle": "नया उपयोगकर्ता जोड़ें",
+    "userName": "उपयोगकर्ता का नाम",
+    "role": "भूमिका",
+    "password": "पासवर्ड",
+    "passwordHint": "व्यवस्थापक के लिए आवश्यक। अपरिवर्तित रखने के लिए खाली छोड़ दें।",
+    "cancel": "रद्द करें",
+    "save": "उपयोगकर्ता सहेजें"
+  },
+  "productFormModal": {
+    "editTitle": "उत्पाद संपादित करें",
+    "addTitle": "नया उत्पाद जोड़ें",
+    "productName": "उत्पाद का नाम",
+    "productImage": "उत्पाद छवि",
+    "pricePerKg": "कीमत (प्रति किग्रा)",
+    "stockInGrams": "स्टॉक (ग्राम में)",
+    "category": "श्रेणी",
+    "cancel": "रद्द करें",
+    "save": "उत्पाद सहेजें"
+  },
+  "reportsPage": {
+    "title": "बिक्री रिपोर्ट",
+    "totalRevenue": "कुल राजस्व",
+    "totalWeightSold": "कुल वजन बेचा गया",
+    "avgSaleValue": "औसत बिक्री मूल्य",
+    "salesOverTime": "समय के साथ बिक्री",
+    "daily": "दैनिक",
+    "weekly": "साप्ताहिक",
+    "monthly": "मासिक",
+    "recentTransactions": "हाल के लेनदेन",
+    "invoiceId": "चालान आईडी",
+    "date": "तारीख",
+    "itemsCount": "वस्तुओं की संख्या",
+    "paymentMethod": "भुगतान का तरीका",
+    "total": "कुल"
+  },
+  "salesChart": {
+    "tooltipLabel": "कुल बिक्री"
+  },
+  "categories": {
+    "Fruit": "फल",
+    "Vegetable": "सब्जी",
+    "Other": "अन्य"
+  }
+}
