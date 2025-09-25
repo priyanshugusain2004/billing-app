@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { useStore } from '../hooks/useStore';
 import SalesChart from '../components/reports/SalesChart';
@@ -6,7 +5,7 @@ import { format } from 'date-fns';
 import { useTranslation } from '../hooks/useTranslation';
 
 const ReportsPage: React.FC = () => {
-    const { sales } = useStore();
+    const { sales, clearSales } = useStore();
     const { t } = useTranslation();
     const [timeframe, setTimeframe] = useState<'daily' | 'weekly' | 'monthly'>('daily');
 
@@ -22,7 +21,15 @@ const ReportsPage: React.FC = () => {
 
     return (
         <div className="container mx-auto space-y-6">
-            <h1 className="text-3xl font-bold text-gray-800">{t('reportsPage.title')}</h1>
+            <div className="flex justify-between items-center">
+                <h1 className="text-3xl font-bold text-gray-800">{t('reportsPage.title')}</h1>
+                <button
+                    onClick={clearSales}
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                >
+                    Clear Sales Data
+                </button>
+            </div>
 
             {/* Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

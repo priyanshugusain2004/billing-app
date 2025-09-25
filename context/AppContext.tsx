@@ -24,6 +24,7 @@ interface AppContextType {
     setQrCodeUrl: (url: string) => void;
     discountTiers: DiscountTier[];
     updateDiscountTiers: (tiers: DiscountTier[]) => void;
+    clearSales: () => void;
 }
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -182,6 +183,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setDiscountTiers(sortedTiers);
     };
 
+    // Clear all sales
+    const clearSales = () => {
+        setSales([]);
+    };
+
     const value = {
         user,
         users,
@@ -204,6 +210,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setQrCodeUrl,
         discountTiers,
         updateDiscountTiers,
+        clearSales,
     };
 
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
