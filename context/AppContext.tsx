@@ -28,10 +28,15 @@ interface AppContextType {
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
 
-const initialDiscounts: DiscountTier[] = [
-    { id: 'tier1', threshold: 200, percentage: 5 },
-    { id: 'tier2', threshold: 400, percentage: 10 },
-];
+interface AppProviderProps {
+    children: ReactNode;
+}
+
+export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
+    const initialDiscounts: DiscountTier[] = [
+        { id: 'tier1', threshold: 200, percentage: 5 },
+        { id: 'tier2', threshold: 400, percentage: 10 },
+    ];
 
     // Load from localStorage or use defaults
     const [user, setUser] = useState<User | null>(null);
