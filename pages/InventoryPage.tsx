@@ -22,6 +22,13 @@ const InventoryPage: React.FC = () => {
     const [newQrCodeUrl, setNewQrCodeUrl] = useState(qrCodeUrl || '');
     const [localTiers, setLocalTiers] = useState<DiscountTier[]>([]);
 
+    // Site name editing
+    const [siteName, setSiteName] = useState(() => localStorage.getItem('siteName') || '');
+    const [isEditingSiteName, setIsEditingSiteName] = useState(false);
+    const [newSiteName, setNewSiteName] = useState(siteName);
+    const [siteNamePasswordInput, setSiteNamePasswordInput] = useState('');
+    const [siteNamePasswordError, setSiteNamePasswordError] = useState('');
+
     useEffect(() => {
         setNewQrCodeUrl(qrCodeUrl || '');
     }, [qrCodeUrl]);
@@ -119,6 +126,21 @@ const InventoryPage: React.FC = () => {
         }
         updateDiscountTiers(localTiers);
         alert(t('inventoryPage.discountSaveSuccess'));
+    };
+
+    const handleSiteNameSave = () => {
+        const savedPassword = localStorage.getItem('siteNamePassword') || '';
+        if (siteNamePasswordInput.trim() !== savedPassword) {
+            setSiteNamePasswordError('Incorrect password.');
+            return;
+        }
+        if (newSiteName.trim()) {
+            setSiteName(newSiteName.trim());
+            localStorage.setItem('siteName', newSiteName.trim());
+            setIsEditingSiteName(false);
+            setSiteNamePasswordInput('');
+            setSiteNamePasswordError('');
+        }
     };
 
     return (
@@ -221,6 +243,37 @@ const InventoryPage: React.FC = () => {
                         </button>
                     </div>
                 </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+                <h2 className="text-xl font-bold text-gray-700 mb-4">Site Name</h2>
+                {isEditingSiteName ? (
+                    <div className="flex flex-col gap-2 items-start">
+                        <input
+                            type="text"
+                            value={newSiteName}
+                            onChange={e => setNewSiteName(e.target.value)}
+                            className="px-3 py-2 border rounded-md"
+                        />
+                        <input
+                            type="password"
+                            value={siteNamePasswordInput}
+                            onChange={e => setSiteNamePasswordInput(e.target.value)}
+                            placeholder="Enter password to change site name"
+                            className="px-3 py-2 border rounded-md"
+                        />
+                        {siteNamePasswordError && <span className="text-red-500 text-sm">{siteNamePasswordError}</span>}
+                        <div className="flex gap-2 mt-2">
+                            <button onClick={handleSiteNameSave} className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark">Save</button>
+                            <button onClick={() => { setIsEditingSiteName(false); setSiteNamePasswordInput(''); setSiteNamePasswordError(''); }} className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300">Cancel</button>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="flex gap-4 items-center">
+                        <span className="text-lg font-semibold text-primary-dark">{siteName}</span>
+                        <button onClick={() => setIsEditingSiteName(true)} className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark">Edit</button>
+                    </div>
+                )}
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">

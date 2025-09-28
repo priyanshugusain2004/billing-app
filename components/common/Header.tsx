@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useStore } from '../../hooks/useStore';
@@ -28,13 +27,16 @@ const Header: React.FC = () => {
                 : 'text-gray-100 hover:bg-primary hover:text-white'
         }`;
 
+    // Get site name from localStorage
+    const siteName = typeof window !== 'undefined' ? localStorage.getItem('siteName') || 'Gusain बुज्जी Bhandar' : 'Gusain बुज्जी Bhandार';
+
     return (
         <header className="bg-primary-dark shadow-md">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center">
                         <AppleIcon className="h-8 w-8 text-white" />
-                        <span className="text-white text-xl font-bold ml-2">Gusain बुज्जी Bhandar</span>
+                        <span className="text-white text-xl font-bold ml-2">{siteName}</span>
                     </div>
                     <nav className="hidden md:flex items-center space-x-4">
                         <NavLink to="/billing" className={navLinkClasses}>

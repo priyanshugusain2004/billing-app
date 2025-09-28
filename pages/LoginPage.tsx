@@ -11,6 +11,9 @@ const LoginPage: React.FC = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
+    // Get site name from localStorage
+    const siteName = typeof window !== 'undefined' ? localStorage.getItem('siteName') || 'Gusain बुज्जी Bhandar' : 'Gusain बुज्जी Bhandार';
+
     const selectedUser = users.find(u => u.id === selectedUserId);
     const isAdminSelected = selectedUser?.role === Role.Admin;
     
@@ -42,7 +45,7 @@ const LoginPage: React.FC = () => {
                 <div className="text-center">
                     <div className="flex items-center justify-center mb-4">
                         <AppleIcon className="h-12 w-12 text-primary" />
-                        <h1 className="text-3xl font-bold text-primary-dark ml-2">{t('loginPage.title')}</h1>
+                        <h1 className="text-3xl font-bold text-primary-dark ml-2">{siteName}</h1>
                     </div>
                     <h2 className="text-xl text-gray-600">{t('loginPage.subtitle')}</h2>
                 </div>
@@ -50,7 +53,7 @@ const LoginPage: React.FC = () => {
                     <div className="space-y-4">
                         <div>
                             <label htmlFor="user-select" className="block text-sm font-medium text-gray-700">
-                                {t('loginPage.selectUser')}
+                                {t('loginPage.selectUser')} ({siteName})
                             </label>
                             <select
                                 id="user-select"

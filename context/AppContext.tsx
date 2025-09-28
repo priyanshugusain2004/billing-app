@@ -84,7 +84,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         }
 
         if (foundUser.role === Role.Admin) {
-            if (foundUser.password === password) {
+            // Always check password against localStorage value
+            const adminPassword = localStorage.getItem('siteNamePassword');
+            if (adminPassword === password) {
                 setUser(foundUser);
                 return true;
             }

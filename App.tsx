@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
@@ -11,9 +10,15 @@ import Header from './components/common/Header';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import { useStore } from './hooks/useStore';
 import { Role } from './types';
+import SiteNameSetupPage from './pages/SiteNameSetupPage';
 
 const AppContent: React.FC = () => {
     const { user } = useStore();
+    const [siteName, setSiteName] = React.useState(() => localStorage.getItem('siteName') || '');
+
+    if (!siteName) {
+        return <SiteNameSetupPage onSiteNameSet={setSiteName} />;
+    }
 
     if (!user) {
         return <LoginPage />;
