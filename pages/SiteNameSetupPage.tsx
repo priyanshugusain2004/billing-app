@@ -5,7 +5,7 @@ interface SiteNameSetupPageProps {
 }
 
 const SiteNameSetupPage: React.FC<SiteNameSetupPageProps> = ({ onSiteNameSet }) => {
-    const [siteName, setSiteName] = useState('');
+    const [siteName, setSiteName] = useState(() => typeof window !== 'undefined' ? localStorage.getItem('siteName') || 'gusain billing app' : 'gusain billing app');
     const [error, setError] = useState('');
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');

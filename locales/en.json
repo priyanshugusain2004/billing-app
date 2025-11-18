@@ -6,7 +6,7 @@
     "logout": "Logout"
   },
   "loginPage": {
-    "title": "Gusain बुज्जी Bhandar",
+    "title": "gusain billing app",
     "subtitle": "Billing & Inventory System",
     "selectUser": "Select User",
     "chooseUser": "-- Choose a user --",
@@ -57,7 +57,7 @@
     "cancel": "Cancel"
   },
   "invoiceModal": {
-    "title": "Gusain बुज्जी Bhandar",
+    "title": "gusain billing app",
     "address": "Your Store Address, City",
     "invoiceLabel": "Invoice #{{invoiceId}}",
     "item": "Item",

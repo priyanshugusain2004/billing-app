@@ -1,5 +1,53 @@
 {
-  "name": "Gusain बुज्जी Bhandar",
-  "description": "A comprehensive billing and inventory management application for a fruit and vegetable shop, featuring multi-user support, sales reporting, and stock management. Built with React and Tailwind CSS for a clean and efficient user experience.",
-  "requestFramePermissions": []
+  "name": "gusain-बुज्जी-bhandar",
+  "displayName": "Gusain Billing App",
+  "shortName": "Gusain Billing",
+  "version": "0.1.0",
+  "description": "A comprehensive billing and inventory management application for fruit & vegetable shops. Multi-user, offline-first (localStorage), invoice generation and sales reports.",
+  "author": {
+    "name": "Priyanshu Gusain",
+    "email": "you@example.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/priyanshugusain2004/billing-app.git"
+  },
+  "homepage": "https://github.com/priyanshugusain2004/billing-app",
+  "keywords": ["billing", "inventory", "pos", "retail", "fruit", "vegetable"],
+  "platforms": ["web"],
+  "defaultLocale": "en",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "screenshots": [
+    "screenshots/01-dashboard.png",
+    "screenshots/02-billing.png"
+  ],
+  "privacyPolicy": "https://yourdomain.com/privacy",
+  "termsOfService": "https://yourdomain.com/terms",
+  "requestFramePermissions": [],
+  "pwa": {
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#388E3C"
+  },
+  "dev": {
+    "run": "npm run dev -- --host",
+    "port": 5173
+  },
+  "data": {
+    "persistence": "localStorage",
+    "cloudSync": false,
+    "notes": "All data stored locally. Consider adding cloud sync for multi-device support."
+  },
+  "env": {
+    "GEMINI_API_KEY": "Set in .env.local if you enable AI features"
+  },
+  "support": {
+    "email": "support@example.com",
+    "issues": "https://github.com/priyanshugusain2004/billing-app/issues"
+  }
 }

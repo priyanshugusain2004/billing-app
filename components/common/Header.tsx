@@ -28,7 +28,7 @@ const Header: React.FC = () => {
         }`;
 
     // Get site name from localStorage
-    const siteName = typeof window !== 'undefined' ? localStorage.getItem('siteName') || 'Gusain बुज्जी Bhandar' : 'Gusain बुज्जी Bhandार';
+    const siteName = typeof window !== 'undefined' ? localStorage.getItem('siteName') || 'gusain billing app' : 'gusain billing app';
 
     return (
         <header className="bg-primary-dark shadow-md">

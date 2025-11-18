@@ -12,7 +12,7 @@ const LoginPage: React.FC = () => {
     const [error, setError] = useState('');
 
     // Get site name from localStorage
-    const siteName = typeof window !== 'undefined' ? localStorage.getItem('siteName') || 'Gusain बुज्जी Bhandar' : 'Gusain बुज्जी Bhandार';
+    const siteName = typeof window !== 'undefined' ? localStorage.getItem('siteName') || 'gusain billing app' : 'gusain billing app';
 
     const selectedUser = users.find(u => u.id === selectedUserId);
     const isAdminSelected = selectedUser?.role === Role.Admin;
