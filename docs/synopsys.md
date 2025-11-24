@@ -1,22 +1,3 @@
-Synopsis: Gusain Billing App
-
-Formatting Instructions (apply in your editor/word processor before printing):
-- Paper: A4 (210 × 297 mm)
-- Print: Single-sided only
-- Line spacing: 1.5
-- Font: Times New Roman throughout
-- Margins: Left – 1.25″, Right – 1″, Top – 0.75″, Bottom – 0.75″
-- Chapter numbers: left-justified, Times New Roman, 16 pt, Bold
-- Chapter titles: centered, Times New Roman, 18 pt, Bold
-- Section headings: left-justified, Times New Roman, 14 pt, Bold
-- Subsection headings: left-justified, Times New Roman, 12 pt, Bold
-- Body text: Times New Roman, 12 pt, justified
-- Figures/Tables captions: chapter-wise numbering (e.g., Fig. 2.1), Times New Roman, 10 pt, Bold
-- Equations: numbered chapter-wise in decimal form (e.g., (3.2))
-- References: numbered in order of occurrence and cited in text using square brackets [1]
-
----
-
 Chapter 1  Introduction
 
 1.1 Company Introduction
@@ -30,150 +11,88 @@ Small retailers face affordability and reliability constraints with existing POS
 
 1.4 Objectives & Scope
 Objectives:
-- Provide a reliable offline-first POS web app with product management and invoicing.
-- Offer role-based access and a simple admin UI for store settings.
-- Allow printable invoices and sales export for accounting.
-- Prepare the architecture for optional online payments and cloud backup.
+- Introduction and Problem Statement
 
-Scope:
-- Frontend-first implementation using browser localStorage for persistence.
-- Admin features for setting shop name and basic user password handling.
-- No initial cloud-hosted database or multi-tenant backend (future work).
+1. Company background
+- Gusain Billing App targets small fruit and vegetable retailers that need a low-cost, easy-to-run point-of-sale solution.
 
-1.5 Hardware & Software Requirements
-Hardware: Any modern laptop/desktop or tablet; low-end devices supported for cashier operations.
-Software: Node.js (for development), modern web browser, Vite and React for development; no server required for core flows.
+2. Problem statement
+- Small retailers commonly rely on cash-ledgers or expensive cloud POS systems; they need an offline-capable, fast billing tool supporting weight-based items, inventory, and printable invoices.
 
+3. Scope and limitations
+- Scope: Frontend SPA for billing, inventory, and reports; local persistence; optional payment and cloud sync integrations.
+- Limitations: No built-in multi-device sync or server-side auth in initial delivery; payment integrations require serverless endpoints.
 
-Chapter 2  System Analysis & Requirements
+4. Objectives (summary)
+- Fast billing (weight-based), inventory CRUD, printable invoices, secure admin controls, CSV import/export, configurable tax/currency, backup/restore toggle.
 
-2.1 Functional Requirements (summary)
-- Product management (add/edit/delete) with image, price, stock and category.
-- Billing: add items to cart, apply discounts, compute tax, finalize invoices, print/save PDF.
-- User roles: Admin and Cashier with role-based access to inventory and reports.
-- Reporting: daily/monthly KPIs, charts, recent transactions.
-- Data: persisted locally (localStorage); export/import for backup.
-- Optional: integrate online payments and reconciliation.
+Background / Literature Survey
 
-2.2 Non-functional Requirements
-- Usability: fast, responsive UI suitable for touch and keyboard use.
-- Reliability: core flows must work offline.
-- Performance: handle thousands of product records with acceptable search/filter latency.
+1. Offline-first architectures
+- Concepts: service workers, IndexedDB/localStorage, background sync, and idempotent APIs to ensure reliable offline capture and later reconciliation.
 
-2.3 Use Cases (key)
-- UC1: Admin sets up shop name and admin password.
-- UC2: Cashier logs in, creates invoice, completes sale (cash/online).
-- UC3: Admin manages inventory and configures discount tiers.
-- UC4: Admin views reports and clears sales data.
+2. POS usability studies
+- Best practices: minimal input latency, large tap targets, quick weight entry, and prominent confirmation for transactions.
 
+3. Payment integration best practices
+- Use hosted checkout/tokenization; verify webhooks server-side; implement idempotency on create-payment requests.
 
-Chapter 3  System Design (summary)
+4. Synchronization and reconciliation
+- Strategies: outbound queues, idempotency keys, settlement matching algorithms, and manual reconciliation UIs.
 
-3.1 Architecture Overview
-- Single-page application (React) with routes for Billing, Inventory, Reports, Login and Site Setup.
-- Local persistence layer using localStorage with a simple abstraction.
-- Payment adapter to allow switching between online providers (Stripe, Razorpay, PayPal) or QR-based UPI.
+Objectives
 
-3.2 Data Entities (brief)
-- Product(id, name, category, price, stock, image)
-- User(id, name, role, password)
-- Invoice(id, date, items[], subtotal, discount, tax, total, payment)
-- DiscountRule(id, threshold, percent)
+1. Primary objectives
+- Implement a responsive offline-capable billing and inventory app with invoice printing and reporting.
 
-3.3 Billing Calculation (equations)
-Subtotal = Σ (quantity_i × price_i)
-Discount = f(Subtotal) (tiered)
-Tax = (Subtotal − Discount) × tax_rate
-Total = Subtotal − Discount + Tax  (number as (3.1) in reports)
+2. Secondary objectives
+- Provide payment integration hooks, CSV import/export, configurable tax/currency and backup options.
 
+3. Success criteria
+- Ability to create and persist invoices offline; printable invoices; configurable tax and discounts; successful webhook-based payment confirmation when integrated.
 
-Chapter 4  Project Management (summary)
+Hardware and Software Requirements
 
-4.1 Development Approach
-Agile iterative with short sprints (1–2 weeks) to deliver core billing features first and payments integration later.
+1. Hardware (minimum)
+- 1.5 GHz CPU, 2 GB RAM, 1024×768 display, optional thermal printer.
 
-4.2 Milestones (example)
-- M1: Basic UI & Site Setup
-- M2: Billing core & invoice printing
-- M3: Inventory and product CRUD
-- M4: Reporting, export and backups
-- M5: Payment integration (sandbox)
-- M6: Testing and deployment
+2. Hardware (recommended)
+- 2+ GHz CPU, 4 GB RAM, 1920×1080 display.
 
-4.3 Risk Management
-- Payment integration issues: mitigate by using sandbox keys and local webhook testing (ngrok).
-- Data loss risk: mitigate by export/import backup and warnings about localStorage size.
+3. Software (development)
+- Node.js (v18+), npm, Vite, TypeScript, code editor.
 
+4. Software (runtime)
+- Modern browsers (Chrome/Firefox/Edge) supporting ES modules and service workers.
 
-Chapter 5  Implementation Notes
+5. Optional server components
+- Serverless functions or small Node server for payment intents and webhook verification; optional cloud DB for sync.
 
-5.1 Inputs
-- Site Setup form: Shop name, admin password, tax rate, default currency, language.
-- Product form: name, price, stock (grams), category, image upload.
-- Billing panel: product search, weight input (grams), quantity, apply discount.
+Possible Approach / Algorithms
 
-5.2 Outputs
-- Printable invoice with shop header, itemized list, totals and payment metadata.
-- Reports: CSV export, charts for daily/weekly/monthly sales.
+1. Product search and lookup
+- Maintain an in-memory tokenized index built at app load for fast prefix searches; debounce input and paginate results for very large catalogs.
 
+2. Billing calculation
+- Deterministic calculation: subtotal, tiered discount selection, tax computation, total. Use fixed-point arithmetic or integer cents/paise to avoid floating-point errors.
 
-Chapter 6  Online Payment (design & flow)
+3. Tiered discount algorithm
+- Sort discount tiers descending by threshold and pick first applicable tier; O(n_tiers) where n_tiers is small.
 
-6.1 Provider Options & Recommendation
-- Providers: Stripe (global), Razorpay (India), PayPal (global), or direct UPI/QR.
-- Recommendation: For India-first deployments use Razorpay (UPI/QR support). For broader/global use, Stripe provides robust SDKs and hosted checkout.
+4. Offline queue and sync
+- On finalize sale, push invoice to outbound queue with status `pending`. Background sync attempts delivery; use idempotency keys and retries with exponential backoff.
 
-6.2 Integration Flow (minimal safe pattern)
-1. Frontend requests payment intent/order from a small backend endpoint (/api/create-payment) supplying invoice id and amount.
-2. Backend calls provider API using server-side secret and returns client token/checkout URL/QR data.
-3. Frontend shows provider-hosted checkout or QR to customer. For hosted checkout, redirect or open modal.
-4. Provider sends webhook to backend on payment success/failure. Backend verifies signature, updates invoice status. Frontend polls or fetches updated invoice status.
+5. Payment integration pattern
+- Server creates payment intent/order with provider and returns token/checkout info; server verifies provider webhooks and updates invoice status.
 
-6.3 UX & Reconciliation
-- Show `Pending` state for online payments until webhook confirms.
-- Support split payments (cash + online) and refunds (store refund record, call provider refund API).
-- Reconciliation screen to match provider settlements with recorded transactions.
-
-6.4 Security
-- Do not store raw card data. Use provider tokenization / hosted checkout.
-- Keep API keys in environment variables (`PAYMENT_API_KEY`, `PAYMENT_WEBHOOK_SECRET`).
-
-
-Chapter 7  Testing & Deployment
-
-7.1 Test Types
-- Unit tests for calculations and business logic.
-- Integration tests for flows that interact with provider mocks.
-- E2E tests simulating cashier flows with Playwright or Cypress.
-
-7.2 Deployment Steps
-- Build: `npm run build` (postbuild copies `locales` to `dist/`).
-- Host static front-end on Netlify/Vercel/GitHub Pages.
-- If using serverless payment endpoints, deploy functions on Vercel or Netlify and configure webhook URL.
-
-
-Chapter 8  Conclusion & Future Work
-
-8.1 Summary
-Gusain Billing App provides a focused, offline-first POS experience for small retailers with clear upgrade paths for payments and cloud sync.
-
-8.2 Future Enhancements
-- Cloud sync & authentication (Firebase/Supabase).
-- Service worker + background sync for queued payments.
-- Loyalty program, tax rules, multi-currency support, hardware integration (barcode/thermal printer).
-
+6. Reconciliation matching
+- Match invoices to provider settlements by transaction id and amount; flag discrepancies for manual review; allow manual mark/resolution.
 
 References
-[1] React Documentation — https://reactjs.org
-[2] Vite Documentation — https://vitejs.dev
-[3] Stripe Docs — https://stripe.com/docs
-[4] Razorpay Docs — https://razorpay.com/docs
 
-
-Checklist for printing
-- Single-sided A4, Times New Roman, 1.5 line spacing, margins: Left 1.25\", Right 1\", Top/Bottom 0.75\".
-- Verify chapter numbering, figure/table numbering (chapter-wise), and equation numbering before final print.
-
----
+1. MDN Web Docs — Service Workers & IndexedDB
+2. Google Developers — Progressive Web Apps
+3. Stripe Documentation — Payments & Webhooks
+4. Razorpay Documentation — Orders & Webhooks
 
 End of synopsis
