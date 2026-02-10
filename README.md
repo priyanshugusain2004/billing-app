@@ -1,6 +1,7 @@
 
 
 # Billing App
+live preview " https://billing-app-flax.vercel.app/ "
 
 A modern billing and inventory management app for fruit and vegetable shops, built with React, Vite, and Tailwind CSS.
 
