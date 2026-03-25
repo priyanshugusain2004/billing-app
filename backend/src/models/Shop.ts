@@ -10,6 +10,18 @@ export interface IShopSettings {
   qrCodeUrl?: string;
 }
 
+export type SubscriptionStatus = 'active' | 'expired' | 'cancelled';
+
+export interface IShopSubscription {
+  planName: string;
+  amountInr: number;
+  startsAt: Date;
+  endsAt: Date;
+  status: SubscriptionStatus;
+  paymentReference: string;
+  lastPaymentAt: Date;
+}
+
 export interface IShop extends Document {
   name: string;
   businessType: string; // 'fruit-shop', 'grocery', 'supermarket', etc.
@@ -17,6 +29,7 @@ export interface IShop extends Document {
   phone: string;
   address?: string;
   settings: IShopSettings;
+  subscription: IShopSubscription;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -38,7 +51,6 @@ const ShopSchema = new Schema<IShop>(
     email: {
       type: String,
       required: true,
-      unique: true,
       lowercase: true,
     },
     phone: {
@@ -57,6 +69,27 @@ const ShopSchema = new Schema<IShop>(
       language: { type: String, enum: ['en', 'hi'], default: 'en' },
       gstNumber: String,
       qrCodeUrl: String,
+    },
+    subscription: {
+      planName: { type: String, default: 'starter-monthly' },
+      amountInr: { type: Number, required: true, min: 0, default: 500 },
+      startsAt: { type: Date, required: true, default: Date.now },
+      endsAt: {
+        type: Date,
+        required: true,
+        default: () => {
+          const now = new Date();
+          now.setDate(now.getDate() + 30);
+          return now;
+        },
+      },
+      status: {
+        type: String,
+        enum: ['active', 'expired', 'cancelled'],
+        default: 'active',
+      },
+      paymentReference: { type: String, required: true },
+      lastPaymentAt: { type: Date, required: true, default: Date.now },
     },
   },
   { timestamps: true }

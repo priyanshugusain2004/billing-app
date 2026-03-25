@@ -14,6 +14,10 @@ const LoginPage: React.FC = () => {
 
   // Login form
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+  const [availableShops, setAvailableShops] = useState<
+    Array<{ id: string; name: string; businessType: string }>
+  >([]);
+  const [selectedShopId, setSelectedShopId] = useState('');
 
   // Signup form
   const [signupForm, setSignupForm] = useState({
@@ -24,6 +28,7 @@ const LoginPage: React.FC = () => {
     username: '',
     password: '',
     address: '',
+    paymentReference: '',
   });
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -32,15 +37,27 @@ const LoginPage: React.FC = () => {
     setError(null);
 
     try {
-      const response = await authService.login(loginForm.email, loginForm.password);
+      const response = await authService.login(
+        loginForm.email,
+        loginForm.password,
+        selectedShopId || undefined
+      );
+
+      setAvailableShops([]);
+      setSelectedShopId('');
       
       // Store user info
       localStorage.setItem('currentUser', JSON.stringify(response.user));
       
       // Redirect to billing
       navigate('/billing');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+    } catch (err: any) {
+      if (err?.code === 'MULTIPLE_SHOPS_FOUND' && Array.isArray(err?.data?.shops)) {
+        setAvailableShops(err.data.shops);
+        setError('Multiple shops found. Select your shop and login again.');
+      } else {
+        setError(err instanceof Error ? err.message : 'Login failed');
+      }
     } finally {
       setLoading(false);
     }
@@ -59,7 +76,9 @@ const LoginPage: React.FC = () => {
         signupForm.phone,
         signupForm.username,
         signupForm.password,
-        signupForm.address
+        signupForm.address,
+        500,
+        signupForm.paymentReference
       );
 
       // Store user info
@@ -101,6 +120,27 @@ const LoginPage: React.FC = () => {
                 required
               />
             </div>
+
+            {availableShops.length > 0 && (
+              <div className="mb-6">
+                <label className="block text-gray-700 font-semibold mb-2">Select Shop</label>
+                <select
+                  value={selectedShopId}
+                  onChange={(e) => setSelectedShopId(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  required
+                >
+                  <option value="" disabled>
+                    Choose your shop
+                  </option>
+                  {availableShops.map((shop) => (
+                    <option key={shop.id} value={shop.id}>
+                      {shop.name} ({shop.businessType})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <div className="mb-6">
               <label className="block text-gray-700 font-semibold mb-2">
@@ -206,7 +246,7 @@ const LoginPage: React.FC = () => {
               />
             </div>
 
-            <div className="mb-6">
+            <div className="mb-4">
               <label className="block text-gray-700 font-semibold mb-2">
                 Password
               </label>
@@ -217,6 +257,26 @@ const LoginPage: React.FC = () => {
                   setSignupForm({ ...signupForm, password: e.target.value })
                 }
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                required
+              />
+            </div>
+
+            <div className="mb-4 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">
+              Subscription onboarding fee: INR 500
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-semibold mb-2">
+                Payment Reference (Txn ID)
+              </label>
+              <input
+                type="text"
+                value={signupForm.paymentReference}
+                onChange={(e) =>
+                  setSignupForm({ ...signupForm, paymentReference: e.target.value })
+                }
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                placeholder="e.g. UPI123456789"
                 required
               />
             </div>

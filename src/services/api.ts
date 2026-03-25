@@ -2,7 +2,7 @@
  * API Service - All backend communication
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Utility function to get token from localStorage
 const getToken = (): string | null => {
@@ -15,9 +15,9 @@ const apiCall = async (
   options: RequestInit = {}
 ): Promise<any> => {
   const token = getToken();
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...options.headers,
+    ...(options.headers as Record<string, string> | undefined),
   };
 
   if (token) {
@@ -32,7 +32,15 @@ const apiCall = async (
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || 'API request failed');
+    const error = new Error(data.message || 'API request failed') as Error & {
+      code?: string;
+      data?: any;
+      status?: number;
+    };
+    error.code = data.code;
+    error.data = data.data;
+    error.status = response.status;
+    throw error;
   }
 
   return data.data || data;
@@ -51,9 +59,11 @@ export const authService = {
     phone: string,
     username: string,
     password: string,
-    address?: string
+    address: string | undefined,
+    paymentAmount = 500,
+    paymentReference: string
   ) => {
-    const response = await apiCall('/auth/signup', {
+    const response = await apiCall('/account/signup', {
       method: 'POST',
       body: JSON.stringify({
         shopName,
@@ -63,6 +73,8 @@ export const authService = {
         username,
         password,
         address,
+        paymentAmount,
+        paymentReference,
       }),
     });
 
@@ -79,10 +91,10 @@ export const authService = {
   /**
    * Login
    */
-  login: async (email: string, password: string) => {
-    const response = await apiCall('/auth/login', {
+  login: async (email: string, password: string, shopId?: string) => {
+    const response = await apiCall('/account/login', {
       method: 'POST',
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, shopId }),
     });
 
     // Store token and shop info
@@ -233,5 +245,26 @@ export const shopService = {
       method: 'POST',
       body: JSON.stringify(userData),
     });
+  },
+};
+
+// ============ PLATFORM ANALYTICS SERVICES ============
+
+export const analyticsService = {
+  getOverview: async (platformAdminKey: string) => {
+    const response = await fetch(`${API_BASE_URL}/analytics/overview`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-platform-admin-key': platformAdminKey,
+      },
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to fetch analytics overview');
+    }
+
+    return data.data;
   },
 };

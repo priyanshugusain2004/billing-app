@@ -3,6 +3,7 @@
     "billing": "Billing",
     "inventory": "Inventory",
     "reports": "Reports",
+    "platformAnalytics": "Platform",
     "logout": "Logout"
   },
   "loginPage": {

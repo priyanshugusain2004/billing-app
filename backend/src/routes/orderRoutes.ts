@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { authMiddleware, adminOnly } from '../middleware/auth.js';
+import { authMiddleware, adminOnly, subscriptionActiveOnly } from '../middleware/auth.js';
+import { usageTracker } from '../middleware/usageTracker.js';
 import {
   createOrder,
   getOrders,
@@ -9,7 +10,8 @@ import {
 const router = Router();
 
 // Protect all routes
-router.use(authMiddleware);
+router.use(authMiddleware, subscriptionActiveOnly);
+router.use(usageTracker('orders'));
 
 /**
  * @route POST /orders

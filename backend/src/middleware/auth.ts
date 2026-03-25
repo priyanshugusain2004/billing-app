@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken, TokenPayload } from '../utils/auth.js';
+import { Shop } from '../models/Shop.js';
 
 /**
  * Extend Express Request to include user data
@@ -50,6 +51,47 @@ export const adminOnly = (req: Request, res: Response, next: NextFunction): void
   }
 
   next();
+};
+
+/**
+ * Subscription middleware - Ensure shop subscription is active
+ */
+export const subscriptionActiveOnly = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    if (!req.shopId) {
+      res.status(401).json({ message: 'Shop ID not found' });
+      return;
+    }
+
+    const shop = await Shop.findById(req.shopId).select('subscription');
+    if (!shop) {
+      res.status(404).json({ message: 'Shop not found' });
+      return;
+    }
+
+    const subscriptionEndsAt = new Date(shop.subscription.endsAt).getTime();
+    const isExpired = subscriptionEndsAt < Date.now();
+    const isInactive = shop.subscription.status !== 'active';
+
+    if (isExpired || isInactive) {
+      if (isExpired && shop.subscription.status !== 'expired') {
+        await Shop.findByIdAndUpdate(req.shopId, { 'subscription.status': 'expired' });
+      }
+
+      res.status(403).json({
+        message: 'Subscription is inactive or expired. Please renew your plan to continue.',
+      });
+      return;
+    }
+
+    next();
+  } catch (error) {
+    res.status(500).json({ message: 'Subscription validation failed' });
+  }
 };
 
 /**

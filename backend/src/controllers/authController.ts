@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import { Shop } from '../models/Shop.js';
 import { User } from '../models/User.js';
-import { hashPassword, comparePassword, generateToken, TokenPayload } from '../utils/auth.js';
+import { UsageEvent } from '../models/UsageEvent.js';
+import { hashPassword, comparePassword, generateToken } from '../utils/auth.js';
 import { ApiError } from '../utils/response.js';
+import { config } from '../config/env.js';
 
 /**
  * POST /auth/signup
@@ -10,18 +12,33 @@ import { ApiError } from '../utils/response.js';
  */
 export const signup = async (req: Request, res: Response) => {
   try {
-    const { shopName, businessType, email, phone, username, password, address } = req.body;
+    const {
+      shopName,
+      businessType,
+      email,
+      phone,
+      username,
+      password,
+      address,
+      paymentAmount,
+      paymentReference,
+    } = req.body;
 
     // Validation
-    if (!shopName || !businessType || !email || !username || !password) {
-      throw new ApiError(400, 'Missing required fields');
+    if (!shopName || !businessType || !email || !username || !password || !paymentReference) {
+      throw new ApiError(400, 'Missing required fields including payment details');
     }
 
-    // Check if shop email already exists
-    const existingShop = await Shop.findOne({ email: email.toLowerCase() });
-    if (existingShop) {
-      throw new ApiError(400, 'Shop with this email already exists');
+    if (Number(paymentAmount) !== config.subscription.onboardingFeeInr) {
+      throw new ApiError(
+        400,
+        `Initial subscription payment must be INR ${config.subscription.onboardingFeeInr}`
+      );
     }
+
+    const subscriptionStart = new Date();
+    const subscriptionEnd = new Date(subscriptionStart);
+    subscriptionEnd.setDate(subscriptionEnd.getDate() + config.subscription.validityDays);
 
     // Create shop
     const shop = new Shop({
@@ -36,6 +53,15 @@ export const signup = async (req: Request, res: Response) => {
         enableQRPayment: false,
         enableDiscounts: true,
         language: 'en',
+      },
+      subscription: {
+        planName: 'starter-monthly',
+        amountInr: Number(paymentAmount),
+        startsAt: subscriptionStart,
+        endsAt: subscriptionEnd,
+        status: 'active',
+        paymentReference,
+        lastPaymentAt: subscriptionStart,
       },
     });
 
@@ -61,6 +87,19 @@ export const signup = async (req: Request, res: Response) => {
       email: admin.email,
     });
 
+    UsageEvent.create({
+      shopId: shop._id,
+      userId: admin._id,
+      actorEmail: admin.email,
+      eventType: 'signup',
+      feature: 'shop-onboarding',
+      route: '/api/auth/signup',
+      method: 'POST',
+      statusCode: 201,
+    }).catch(() => {
+      // Analytics is non-blocking.
+    });
+
     res.status(201).json({
       message: 'Shop created successfully',
       data: {
@@ -69,6 +108,7 @@ export const signup = async (req: Request, res: Response) => {
           name: shop.name,
           businessType: shop.businessType,
           settings: shop.settings,
+          subscription: shop.subscription,
         },
         user: {
           id: admin._id,
@@ -93,35 +133,113 @@ export const signup = async (req: Request, res: Response) => {
  */
 export const login = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, shopId } = req.body;
 
     if (!email || !password) {
-      throw new ApiError(400, 'Email and password required');
+      throw new ApiError(400, 'Email/username and password required');
     }
 
-    // Find user with password field included
-    const user = await User.findOne({ email: email.toLowerCase() }).select('+passwordHash').populate('shopId');
+    const identifier = String(email).trim();
+    const normalizedIdentifier = identifier.toLowerCase();
 
-    if (!user) {
+    // Find users by email (same person can own/use multiple shops)
+    const users = await User.find({
+      $or: [{ email: normalizedIdentifier }, { username: identifier }],
+    })
+      .select('+passwordHash')
+      .populate('shopId');
+
+    if (users.length === 0) {
       throw new ApiError(401, 'Invalid credentials');
     }
 
-    // Verify password
-    const isValidPassword = await comparePassword(password, user.passwordHash);
-    if (!isValidPassword) {
+    const usersWithValidPassword = [] as typeof users;
+    for (const item of users) {
+      const isValidPassword = await comparePassword(password, item.passwordHash);
+      if (isValidPassword) {
+        usersWithValidPassword.push(item);
+      }
+    }
+
+    if (usersWithValidPassword.length === 0) {
       throw new ApiError(401, 'Invalid credentials');
+    }
+
+    let user = usersWithValidPassword[0];
+
+    if (usersWithValidPassword.length > 1) {
+      if (!shopId) {
+        res.status(409).json({
+          message: 'Multiple shops found for this account. Please select a shop.',
+          code: 'MULTIPLE_SHOPS_FOUND',
+          data: {
+            shops: usersWithValidPassword.map((item) => {
+              const shop = item.shopId as any;
+              return {
+                id: shop?._id?.toString(),
+                name: shop?.name,
+                businessType: shop?.businessType,
+              };
+            }),
+          },
+        });
+        return;
+      }
+
+      const selectedUser = usersWithValidPassword.find(
+        (item) => (item.shopId as any)?._id?.toString() === shopId
+      );
+
+      if (!selectedUser) {
+        throw new ApiError(400, 'Invalid shop selection');
+      }
+
+      user = selectedUser;
     }
 
     if (!user.isActive) {
       throw new ApiError(403, 'User account is inactive');
     }
 
+    const shop = user.shopId as any;
+    if (!shop) {
+      throw new ApiError(404, 'Shop not found for user');
+    }
+
+    const isSubscriptionExpired = new Date(shop.subscription.endsAt).getTime() < Date.now();
+    const isSubscriptionInactive = shop.subscription.status !== 'active';
+
+    if (isSubscriptionExpired || isSubscriptionInactive) {
+      if (isSubscriptionExpired && shop.subscription.status !== 'expired') {
+        await Shop.findByIdAndUpdate(shop._id, {
+          'subscription.status': 'expired',
+        });
+      }
+      throw new ApiError(
+        403,
+        'Subscription is inactive or expired. Please renew your plan to continue.'
+      );
+    }
+
     // Generate token
     const token = generateToken({
       userId: user._id.toString(),
-      shopId: user.shopId._id.toString(),
+      shopId: shop._id.toString(),
       role: user.role,
       email: user.email,
+    });
+
+    UsageEvent.create({
+      shopId: shop._id,
+      userId: user._id,
+      actorEmail: user.email,
+      eventType: 'login',
+      feature: 'auth-login',
+      route: '/api/auth/login',
+      method: 'POST',
+      statusCode: 200,
+    }).catch(() => {
+      // Analytics is non-blocking.
     });
 
     res.json({
@@ -134,9 +252,10 @@ export const login = async (req: Request, res: Response) => {
           role: user.role,
         },
         shop: {
-          id: user.shopId._id,
-          name: user.shopId.name,
-          settings: user.shopId.settings,
+          id: shop._id,
+          name: shop.name,
+          settings: shop.settings,
+          subscription: shop.subscription,
         },
         token,
       },

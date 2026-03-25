@@ -59,7 +59,9 @@ Request:
   "phone": "9876543210",
   "username": "admin",
   "password": "SecurePassword123",
-  "address": "123 Main St"
+  "address": "123 Main St",
+  "paymentAmount": 500,
+  "paymentReference": "UPI123456789"
 }
 \`\`\`
 
@@ -174,6 +176,16 @@ Update shop settings (Admin only)
     "language": "hi"
   }
 }
+\`\`\`
+
+### Platform Analytics (Owner)
+
+#### GET /api/analytics/overview
+Returns cross-shop app analytics like total shops, paid shops, active users, feature usage, and recent activity events.
+
+Headers:
+\`\`\`
+x-platform-admin-key: <PLATFORM_ADMIN_KEY>
 \`\`\`
 
 #### GET /api/shop/users
