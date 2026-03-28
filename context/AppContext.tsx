@@ -6,6 +6,7 @@ interface AppContextType {
     user: User | null;
     users: User[];
     login: (userId: string, password?: string) => boolean;
+    setAuthenticatedUser: (user: User) => void;
     logout: () => void;
     addUser: (user: Omit<User, 'id'>) => void;
     updateUser: (user: User) => void;
@@ -40,7 +41,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     ];
 
     // Load from localStorage or use defaults
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<User | null>(() => {
+        const data = localStorage.getItem('currentUser');
+        return data ? JSON.parse(data) : null;
+    });
     const [users, setUsers] = useState<User[]>(() => {
         const data = localStorage.getItem('users');
         return data ? JSON.parse(data) : INITIAL_USERS;
@@ -99,6 +103,15 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
     const logout = () => {
         setUser(null);
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('shopId');
+        localStorage.removeItem('shopSettings');
+    };
+
+    const setAuthenticatedUser = (userData: User) => {
+        setUser(userData);
+        localStorage.setItem('currentUser', JSON.stringify(userData));
     };
 
     const addUser = (userData: Omit<User, 'id'>) => {
@@ -194,6 +207,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         user,
         users,
         login,
+        setAuthenticatedUser,
         logout,
         addUser,
         updateUser,

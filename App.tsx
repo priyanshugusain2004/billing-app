@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import BillingPage from './pages/BillingPage';
 import InventoryPage from './pages/InventoryPage';
 import ReportsPage from './pages/ReportsPage';
+import PlatformAnalyticsPage from './pages/PlatformAnalyticsPage';
 import Header from './components/common/Header';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import { useStore } from './hooks/useStore';
@@ -45,6 +46,14 @@ const AppContent: React.FC = () => {
                                 <ReportsPage />
                             </ProtectedRoute>
                         } 
+                    />
+                    <Route
+                        path="/owner-portal-analytics"
+                        element={
+                            <ProtectedRoute allowedRoles={[Role.Admin]}>
+                                <PlatformAnalyticsPage />
+                            </ProtectedRoute>
+                        }
                     />
                     <Route path="*" element={<Navigate to="/billing" replace />} />
                 </Routes>
