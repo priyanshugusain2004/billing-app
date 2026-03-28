@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useStore } from '../hooks/useStore';
 import { ProductCategory, Product, PaymentMethod } from '../types';
 import ProductCard from '../components/billing/ProductCard';
@@ -10,13 +10,18 @@ import WeightInputModal from '../components/billing/WeightInputModal';
 import { useTranslation } from '../hooks/useTranslation';
 
 const BillingPage: React.FC = () => {
-    const { products, addToCart, addSale, cart, discountTiers } = useStore();
+    const { products, addToCart, addSale, cart, discountTiers, shopLayout } = useStore();
     const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<ProductCategory | 'all'>('all');
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [isWeightModalOpen, setIsWeightModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+    const shopId = typeof window !== 'undefined' ? localStorage.getItem('shopId') || 'local-default' : 'local-default';
+    const shopBusinessType = typeof window !== 'undefined'
+        ? localStorage.getItem(`${shopId}:shopBusinessType`) || ''
+        : '';
 
     const filteredProducts = useMemo(() => {
         return products.filter(product => {
@@ -75,12 +80,60 @@ const BillingPage: React.FC = () => {
         setIsPaymentModalOpen(false);
     };
 
-    const categories = useMemo(() => ['all', ...Object.values(ProductCategory)], []);
+    const categories = useMemo(() => {
+        if (shopBusinessType === 'fruit-shop') {
+            return ['all', ProductCategory.Fruit, ProductCategory.Other];
+        }
+
+        if (shopBusinessType === 'vegetable-shop') {
+            return ['all', ProductCategory.Vegetable, ProductCategory.Other];
+        }
+
+        return ['all', ...Object.values(ProductCategory)];
+    }, [shopBusinessType]);
+
+    useEffect(() => {
+        if (shopBusinessType === 'fruit-shop') {
+            setSelectedCategory(ProductCategory.Fruit);
+            return;
+        }
+
+        if (shopBusinessType === 'vegetable-shop') {
+            setSelectedCategory(ProductCategory.Vegetable);
+            return;
+        }
+
+        setSelectedCategory('all');
+    }, [shopBusinessType]);
+
+    const billingShellClass =
+        shopLayout === 'compact'
+            ? 'grid grid-cols-1 xl:grid-cols-4 gap-4 h-[calc(100vh-8rem)]'
+            : 'grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-8rem)]';
+
+    const pageToneClass =
+        shopLayout === 'market'
+            ? 'rounded-2xl p-3 bg-[linear-gradient(120deg,#fff7ed,white,#ecfeff)]'
+            : shopLayout === 'compact'
+                ? 'rounded-xl p-2 bg-[linear-gradient(120deg,#f8fafc,white,#eef2ff)]'
+                : '';
+
+    const productPanelClass =
+        shopLayout === 'market'
+            ? 'lg:col-span-2 bg-gradient-to-br from-orange-50 via-white to-emerald-50 p-6 rounded-xl shadow-md flex flex-col'
+            : 'lg:col-span-2 bg-white p-6 rounded-lg shadow-md flex flex-col';
+
+    const productGridClass =
+        shopLayout === 'compact'
+            ? 'grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-3'
+            : shopLayout === 'market'
+                ? 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6'
+                : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6';
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-8rem)]">
+        <div className={`${pageToneClass} ${billingShellClass}`}>
             {/* Products Section */}
-            <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md flex flex-col">
+            <div className={productPanelClass}>
                 <div className="mb-4">
                     <h1 className="text-2xl font-bold text-gray-800">{t('billingPage.productsTitle')}</h1>
                     <div className="mt-4 flex flex-col sm:flex-row gap-4">
@@ -116,9 +169,14 @@ const BillingPage: React.FC = () => {
                     </div>
                 </div>
                 <div className="flex-grow overflow-y-auto -m-2 p-2">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div className={productGridClass}>
                         {filteredProducts.map((product: Product) => (
-                            <ProductCard key={product.id} product={product} onSelectProduct={handleProductSelect} />
+                            <ProductCard
+                                key={product.id}
+                                product={product}
+                                onSelectProduct={handleProductSelect}
+                                layout={shopLayout}
+                            />
                         ))}
                     </div>
                 </div>
@@ -132,6 +190,7 @@ const BillingPage: React.FC = () => {
                     discount={discount}
                     discountPercentage={discountPercentage}
                     finalTotal={finalTotal}
+                    layout={shopLayout}
                 />
             </div>
             

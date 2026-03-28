@@ -50,3 +50,5 @@ export interface DiscountTier {
     threshold: number;
     percentage: number;
 }
+
+export type ShopLayoutTemplate = 'classic' | 'compact' | 'market';

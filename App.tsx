@@ -7,6 +7,7 @@ import BillingPage from './pages/BillingPage';
 import InventoryPage from './pages/InventoryPage';
 import ReportsPage from './pages/ReportsPage';
 import PlatformAnalyticsPage from './pages/PlatformAnalyticsPage';
+import LayoutStudioPage from './pages/LayoutStudioPage';
 import Header from './components/common/Header';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import { useStore } from './hooks/useStore';
@@ -46,6 +47,14 @@ const AppContent: React.FC = () => {
                                 <ReportsPage />
                             </ProtectedRoute>
                         } 
+                    />
+                    <Route
+                        path="/layout-studio"
+                        element={
+                            <ProtectedRoute allowedRoles={[Role.Admin]}>
+                                <LayoutStudioPage />
+                            </ProtectedRoute>
+                        }
                     />
                     <Route
                         path="/owner-portal-analytics"

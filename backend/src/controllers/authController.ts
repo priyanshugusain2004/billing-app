@@ -254,6 +254,7 @@ export const login = async (req: Request, res: Response) => {
         shop: {
           id: shop._id,
           name: shop.name,
+          businessType: shop.businessType,
           settings: shop.settings,
           subscription: shop.subscription,
         },

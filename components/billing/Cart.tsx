@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useStore } from '../../hooks/useStore';
-import { CartItem } from '../../types';
+import { CartItem, ShopLayoutTemplate } from '../../types';
 import TrashIcon from '../icons/TrashIcon';
 import { useTranslation } from '../../hooks/useTranslation';
 
@@ -11,14 +11,22 @@ interface CartProps {
     discount: number;
     discountPercentage: number;
     finalTotal: number;
+    layout: ShopLayoutTemplate;
 }
 
-const Cart: React.FC<CartProps> = ({ onProceedToPayment, subtotal, discount, discountPercentage, finalTotal }) => {
+const Cart: React.FC<CartProps> = ({ onProceedToPayment, subtotal, discount, discountPercentage, finalTotal, layout }) => {
     const { cart, removeFromCart, clearCart } = useStore();
     const { t } = useTranslation();
+
+    const containerClass =
+        layout === 'market'
+            ? 'bg-gradient-to-b from-white to-orange-50 rounded-xl shadow-lg p-6 h-full flex flex-col border border-orange-100'
+            : layout === 'compact'
+                ? 'bg-white rounded-lg shadow-md p-4 h-full flex flex-col'
+                : 'bg-white rounded-lg shadow-lg p-6 h-full flex flex-col';
     
     return (
-        <div className="bg-white rounded-lg shadow-lg p-6 h-full flex flex-col">
+        <div className={containerClass}>
             <h2 className="text-2xl font-bold mb-4 border-b pb-2 text-primary-dark">{t('billingPage.cartTitle')}</h2>
             
             {cart.length === 0 ? (

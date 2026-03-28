@@ -4,6 +4,30 @@
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
+const getLayoutFromBusinessType = (businessType?: string) => {
+  switch (businessType) {
+    case 'supermarket':
+      return 'compact';
+    case 'fruit-shop':
+    case 'vegetable-shop':
+      return 'market';
+    case 'grocery':
+    case 'other':
+    default:
+      return 'classic';
+  }
+};
+
+const applyDefaultLayoutForShop = (shop: { id: string; businessType?: string }) => {
+  const customizedKey = `${shop.id}:layoutCustomized`;
+  const hasManualCustomization = localStorage.getItem(customizedKey) === 'true';
+
+  if (!hasManualCustomization) {
+    const layout = getLayoutFromBusinessType(shop.businessType);
+    localStorage.setItem(`${shop.id}:shopLayout`, JSON.stringify(layout));
+  }
+};
+
 // Utility function to get token from localStorage
 const getToken = (): string | null => {
   return localStorage.getItem('authToken');
@@ -83,6 +107,10 @@ export const authService = {
       localStorage.setItem('authToken', response.token);
       localStorage.setItem('shopId', response.shop.id);
       localStorage.setItem('shopSettings', JSON.stringify(response.shop.settings));
+      if (response.shop.businessType) {
+        localStorage.setItem(`${response.shop.id}:shopBusinessType`, response.shop.businessType);
+      }
+      applyDefaultLayoutForShop(response.shop);
     }
 
     return response;
@@ -102,6 +130,10 @@ export const authService = {
       localStorage.setItem('authToken', response.token);
       localStorage.setItem('shopId', response.shop.id);
       localStorage.setItem('shopSettings', JSON.stringify(response.shop.settings));
+      if (response.shop.businessType) {
+        localStorage.setItem(`${response.shop.id}:shopBusinessType`, response.shop.businessType);
+      }
+      applyDefaultLayoutForShop(response.shop);
     }
 
     return response;

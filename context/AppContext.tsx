@@ -1,6 +1,37 @@
 import React, { createContext, useState, ReactNode, useEffect } from 'react';
-import { User, Role, Product, CartItem, Sale, DiscountTier } from '../types';
+import { User, Role, Product, CartItem, Sale, DiscountTier, ShopLayoutTemplate } from '../types';
 import { INITIAL_PRODUCTS, INITIAL_USERS, DEFAULT_PLACEHOLDER_IMAGE } from '../constants';
+
+const DEFAULT_SHOP_SCOPE = 'local-default';
+
+const getCurrentShopScope = (): string => {
+    return localStorage.getItem('shopId') || DEFAULT_SHOP_SCOPE;
+};
+
+const getScopedStorageKey = (scope: string, key: string): string => {
+    return `${scope}:${key}`;
+};
+
+const getLayoutFromBusinessType = (businessType: string | null): ShopLayoutTemplate => {
+    switch (businessType) {
+        case 'supermarket':
+            return 'compact';
+        case 'fruit-shop':
+        case 'vegetable-shop':
+            return 'market';
+        case 'grocery':
+        case 'other':
+        default:
+            return 'classic';
+    }
+};
+
+const parseSalesData = (data: string): Sale[] => {
+    return JSON.parse(data, (key, value) => {
+        if (key === 'date' && typeof value === 'string') return new Date(value);
+        return value;
+    });
+};
 
 interface AppContextType {
     user: User | null;
@@ -25,6 +56,8 @@ interface AppContextType {
     setQrCodeUrl: (url: string) => void;
     discountTiers: DiscountTier[];
     updateDiscountTiers: (tiers: DiscountTier[]) => void;
+    shopLayout: ShopLayoutTemplate;
+    setShopLayout: (layout: ShopLayoutTemplate) => void;
     clearSales: () => void;
 }
 
@@ -40,46 +73,138 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         { id: 'tier2', threshold: 400, percentage: 10 },
     ];
 
+    const readScopedJson = <T,>(scope: string, key: string, fallback: T): T => {
+        const scoped = localStorage.getItem(getScopedStorageKey(scope, key));
+        if (scoped) {
+            return JSON.parse(scoped) as T;
+        }
+
+        // Backward compatibility with pre-scope data for old local setup only.
+        if (scope === DEFAULT_SHOP_SCOPE) {
+            const legacy = localStorage.getItem(key);
+            if (legacy) {
+                return JSON.parse(legacy) as T;
+            }
+        }
+
+        return fallback;
+    };
+
+    const readScopedSales = (scope: string): Sale[] => {
+        const scoped = localStorage.getItem(getScopedStorageKey(scope, 'sales'));
+        if (scoped) {
+            return parseSalesData(scoped);
+        }
+
+        if (scope === DEFAULT_SHOP_SCOPE) {
+            const legacy = localStorage.getItem('sales');
+            if (legacy) {
+                return parseSalesData(legacy);
+            }
+        }
+
+        return [];
+    };
+
+    const readScopedString = (scope: string, key: string): string | null => {
+        const scoped = localStorage.getItem(getScopedStorageKey(scope, key));
+        if (scoped !== null) {
+            return scoped;
+        }
+
+        if (scope === DEFAULT_SHOP_SCOPE) {
+            return localStorage.getItem(key);
+        }
+
+        return null;
+    };
+
+    const getDefaultLayoutForScope = (scope: string): ShopLayoutTemplate => {
+        const businessType = readScopedString(scope, 'shopBusinessType');
+        return getLayoutFromBusinessType(businessType);
+    };
+
     // Load from localStorage or use defaults
+    const [activeShopScope, setActiveShopScope] = useState<string>(() => getCurrentShopScope());
+    const [lastLoadedScope, setLastLoadedScope] = useState<string>(() => getCurrentShopScope());
     const [user, setUser] = useState<User | null>(() => {
         const data = localStorage.getItem('currentUser');
         return data ? JSON.parse(data) : null;
     });
     const [users, setUsers] = useState<User[]>(() => {
-        const data = localStorage.getItem('users');
-        return data ? JSON.parse(data) : INITIAL_USERS;
+        return readScopedJson<User[]>(getCurrentShopScope(), 'users', INITIAL_USERS);
     });
     const [products, setProducts] = useState<Product[]>(() => {
-        const data = localStorage.getItem('products');
-        return data ? JSON.parse(data) : INITIAL_PRODUCTS;
+        return readScopedJson<Product[]>(getCurrentShopScope(), 'products', INITIAL_PRODUCTS);
     });
     const [cart, setCart] = useState<CartItem[]>(() => {
-        const data = localStorage.getItem('cart');
-        return data ? JSON.parse(data) : [];
+        return readScopedJson<CartItem[]>(getCurrentShopScope(), 'cart', []);
     });
     const [sales, setSales] = useState<Sale[]>(() => {
-        const data = localStorage.getItem('sales');
-        return data ? JSON.parse(data, (key, value) => {
-            if (key === 'date' && typeof value === 'string') return new Date(value);
-            return value;
-        }) : [];
+        return readScopedSales(getCurrentShopScope());
     });
     const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(() => {
-        const data = localStorage.getItem('qrCodeUrl');
-        return data ? data : null;
+        return readScopedString(getCurrentShopScope(), 'qrCodeUrl');
     });
     const [discountTiers, setDiscountTiers] = useState<DiscountTier[]>(() => {
-        const data = localStorage.getItem('discountTiers');
-        return data ? JSON.parse(data) : initialDiscounts;
+        return readScopedJson<DiscountTier[]>(getCurrentShopScope(), 'discountTiers', initialDiscounts);
+    });
+    const [shopLayout, setShopLayout] = useState<ShopLayoutTemplate>(() => {
+        const scope = getCurrentShopScope();
+        return readScopedJson<ShopLayoutTemplate>(scope, 'shopLayout', getDefaultLayoutForScope(scope));
     });
 
+    useEffect(() => {
+        setUsers(readScopedJson<User[]>(activeShopScope, 'users', INITIAL_USERS));
+        setProducts(readScopedJson<Product[]>(activeShopScope, 'products', INITIAL_PRODUCTS));
+        setCart(readScopedJson<CartItem[]>(activeShopScope, 'cart', []));
+        setSales(readScopedSales(activeShopScope));
+        setQrCodeUrl(readScopedString(activeShopScope, 'qrCodeUrl'));
+        setDiscountTiers(readScopedJson<DiscountTier[]>(activeShopScope, 'discountTiers', initialDiscounts));
+        setShopLayout(
+            readScopedJson<ShopLayoutTemplate>(
+                activeShopScope,
+                'shopLayout',
+                getDefaultLayoutForScope(activeShopScope)
+            )
+        );
+        setLastLoadedScope(activeShopScope);
+    }, [activeShopScope]);
+
     // Persist to localStorage on change
-    useEffect(() => { localStorage.setItem('users', JSON.stringify(users)); }, [users]);
-    useEffect(() => { localStorage.setItem('products', JSON.stringify(products)); }, [products]);
-    useEffect(() => { localStorage.setItem('cart', JSON.stringify(cart)); }, [cart]);
-    useEffect(() => { localStorage.setItem('sales', JSON.stringify(sales)); }, [sales]);
-    useEffect(() => { if (qrCodeUrl) { localStorage.setItem('qrCodeUrl', qrCodeUrl); } else { localStorage.removeItem('qrCodeUrl'); } }, [qrCodeUrl]);
-    useEffect(() => { localStorage.setItem('discountTiers', JSON.stringify(discountTiers)); }, [discountTiers]);
+    useEffect(() => {
+        if (lastLoadedScope !== activeShopScope) return;
+        localStorage.setItem(getScopedStorageKey(activeShopScope, 'users'), JSON.stringify(users));
+    }, [users, activeShopScope, lastLoadedScope]);
+    useEffect(() => {
+        if (lastLoadedScope !== activeShopScope) return;
+        localStorage.setItem(getScopedStorageKey(activeShopScope, 'products'), JSON.stringify(products));
+    }, [products, activeShopScope, lastLoadedScope]);
+    useEffect(() => {
+        if (lastLoadedScope !== activeShopScope) return;
+        localStorage.setItem(getScopedStorageKey(activeShopScope, 'cart'), JSON.stringify(cart));
+    }, [cart, activeShopScope, lastLoadedScope]);
+    useEffect(() => {
+        if (lastLoadedScope !== activeShopScope) return;
+        localStorage.setItem(getScopedStorageKey(activeShopScope, 'sales'), JSON.stringify(sales));
+    }, [sales, activeShopScope, lastLoadedScope]);
+    useEffect(() => {
+        if (lastLoadedScope !== activeShopScope) return;
+        const key = getScopedStorageKey(activeShopScope, 'qrCodeUrl');
+        if (qrCodeUrl) {
+            localStorage.setItem(key, qrCodeUrl);
+        } else {
+            localStorage.removeItem(key);
+        }
+    }, [qrCodeUrl, activeShopScope, lastLoadedScope]);
+    useEffect(() => {
+        if (lastLoadedScope !== activeShopScope) return;
+        localStorage.setItem(getScopedStorageKey(activeShopScope, 'discountTiers'), JSON.stringify(discountTiers));
+    }, [discountTiers, activeShopScope, lastLoadedScope]);
+    useEffect(() => {
+        if (lastLoadedScope !== activeShopScope) return;
+        localStorage.setItem(getScopedStorageKey(activeShopScope, 'shopLayout'), JSON.stringify(shopLayout));
+    }, [shopLayout, activeShopScope, lastLoadedScope]);
 
     const login = (userId: string, password?: string): boolean => {
         const foundUser = users.find(u => u.id === userId);
@@ -92,12 +217,16 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             const adminPassword = localStorage.getItem('siteNamePassword');
             if (adminPassword === password) {
                 setUser(foundUser);
+                localStorage.setItem('currentUser', JSON.stringify(foundUser));
+                setActiveShopScope(getCurrentShopScope());
                 return true;
             }
             return false;
         }
 
         setUser(foundUser);
+        localStorage.setItem('currentUser', JSON.stringify(foundUser));
+        setActiveShopScope(getCurrentShopScope());
         return true;
     };
 
@@ -107,11 +236,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('shopId');
         localStorage.removeItem('shopSettings');
+        setActiveShopScope(DEFAULT_SHOP_SCOPE);
     };
 
     const setAuthenticatedUser = (userData: User) => {
         setUser(userData);
         localStorage.setItem('currentUser', JSON.stringify(userData));
+        setActiveShopScope(getCurrentShopScope());
     };
 
     const addUser = (userData: Omit<User, 'id'>) => {
@@ -226,6 +357,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setQrCodeUrl,
         discountTiers,
         updateDiscountTiers,
+        shopLayout,
+        setShopLayout,
         clearSales,
     };
 

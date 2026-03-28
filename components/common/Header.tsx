@@ -58,6 +58,10 @@ const Header: React.FC = () => {
                                     <ChartIcon className="h-5 w-5 mr-2" />
                                     {t('header.reports')}
                                 </NavLink>
+                                <NavLink to="/layout-studio" className={navLinkClasses}>
+                                    <ChartIcon className="h-5 w-5 mr-2" />
+                                    {t('header.layoutStudio')}
+                                </NavLink>
                             </>
                         )}
                     </nav>
@@ -105,6 +109,10 @@ const Header: React.FC = () => {
                             <NavLink to="/reports" className={navLinkClasses}>
                                 <ChartIcon className="h-5 w-5" />
                                 <span className="ml-2">{t('header.reports')}</span>
+                            </NavLink>
+                            <NavLink to="/layout-studio" className={navLinkClasses}>
+                                <ChartIcon className="h-5 w-5" />
+                                <span className="ml-2">{t('header.layoutStudio')}</span>
                             </NavLink>
                         </>
                     )}
