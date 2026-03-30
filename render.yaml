@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: billing-app-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRY
+        value: 7d
+      - key: FRONTEND_URL
+        sync: false
+      - key: SUBSCRIPTION_ONBOARDING_FEE_INR
+        value: 500
+      - key: SUBSCRIPTION_VALIDITY_DAYS
+        value: 30
+      - key: PLATFORM_ADMIN_KEY
+        sync: false

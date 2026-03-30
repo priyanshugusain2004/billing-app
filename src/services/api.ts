@@ -33,6 +33,19 @@ const getToken = (): string | null => {
   return localStorage.getItem('authToken');
 };
 
+const parseResponseBody = async (response: Response): Promise<any> => {
+  const contentType = response.headers.get('content-type') || '';
+
+  if (contentType.includes('application/json')) {
+    return response.json();
+  }
+
+  const text = await response.text();
+  return {
+    message: text?.slice(0, 200) || `Request failed with status ${response.status}`,
+  };
+};
+
 // Utility function to make API calls with auth header
 const apiCall = async (
   endpoint: string,
@@ -53,7 +66,7 @@ const apiCall = async (
     headers,
   });
 
-  const data = await response.json();
+  const data = await parseResponseBody(response);
 
   if (!response.ok) {
     const error = new Error(data.message || 'API request failed') as Error & {
@@ -292,7 +305,7 @@ export const analyticsService = {
       },
     });
 
-    const data = await response.json();
+    const data = await parseResponseBody(response);
     if (!response.ok) {
       throw new Error(data.message || 'Failed to fetch analytics overview');
     }
