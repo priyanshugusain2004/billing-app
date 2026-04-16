@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-interface AdminLoginPageProps {
-  onLoginSuccess: () => void;
-}
-
-const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onLoginSuccess }) => {
+const AdminLoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,8 +34,7 @@ const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onLoginSuccess }) => {
       localStorage.setItem('adminToken', data.token);
       localStorage.setItem('isAdmin', 'true');
 
-      onLoginSuccess();
-      navigate('#/admin');
+      navigate('/admin');
     } catch (err) {
       setError('Network error. Please try again.');
     } finally {

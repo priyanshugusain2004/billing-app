@@ -18,15 +18,10 @@ import SiteNameSetupPage from './pages/SiteNameSetupPage';
 const AppContent: React.FC = () => {
     const { user } = useStore();
     const [siteName, setSiteName] = React.useState(() => localStorage.getItem('siteName') || '');
-    const adminToken = localStorage.getItem('adminToken');
+    const isAdminPath = typeof window !== 'undefined' && window.location.hash.startsWith('#/admin');
 
-    // Show site name setup first
-    if (!siteName) {
-        return <SiteNameSetupPage onSiteNameSet={setSiteName} />;
-    }
-
-    // Admin routes (separate from shop user flow)
-    if (adminToken) {
+    // Admin routes are fully isolated from shop user/site setup flow.
+    if (isAdminPath) {
         return (
             <div className="min-h-screen bg-gray-50 text-text-primary">
                 <Routes>
@@ -38,11 +33,16 @@ const AppContent: React.FC = () => {
                             </main>
                         </AdminRoute>
                     } />
-                    <Route path="/admin/login" element={<AdminLoginPage onLoginSuccess={() => window.location.hash = '#/admin'} />} />
-                    <Route path="*" element={<Navigate to="/admin" replace />} />
+                    <Route path="/admin/login" element={<AdminLoginPage />} />
+                    <Route path="*" element={<Navigate to="/admin/login" replace />} />
                 </Routes>
             </div>
         );
+    }
+
+    // Show site name setup first for shop app only.
+    if (!siteName) {
+        return <SiteNameSetupPage onSiteNameSet={setSiteName} />;
     }
 
     // Shop user routes
@@ -88,7 +88,7 @@ const AdminHeader: React.FC = () => {
     const handleLogout = () => {
         localStorage.removeItem('adminToken');
         localStorage.removeItem('isAdmin');
-        navigate('/#/admin/login');
+        navigate('/admin/login');
     };
 
     return (
