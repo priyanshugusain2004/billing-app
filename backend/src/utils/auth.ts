@@ -29,7 +29,8 @@ export interface TokenPayload {
 
 export const generateToken = (payload: TokenPayload): string => {
   return jwt.sign(payload, config.jwt.secret, {
-    expiresIn: config.jwt.expiry,
+    // jsonwebtoken v9 narrows expiresIn to StringValue | number
+    expiresIn: config.jwt.expiry as jwt.SignOptions['expiresIn'],
   });
 };
 
