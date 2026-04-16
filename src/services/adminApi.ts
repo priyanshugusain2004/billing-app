@@ -46,6 +46,32 @@ const adminApiCall = async (
 
 export const adminService = {
   /**
+   * Login admin with password
+   */
+  login: async (password: string) => {
+    const response = await fetch(`${API_BASE_URL}/admin/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ password }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Login failed');
+    }
+
+    if (data.token) {
+      localStorage.setItem('adminToken', data.token);
+      localStorage.setItem('isAdmin', 'true');
+    }
+
+    return data;
+  },
+
+  /**
    * Logout admin
    */
   logout: async () => {
