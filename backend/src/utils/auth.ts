@@ -18,13 +18,15 @@ export const comparePassword = async (password: string, hash: string): Promise<b
 };
 
 /**
- * Generate JWT token
+ * Token Payload - supports both user and admin tokens
  */
 export interface TokenPayload {
-  userId: string;
-  shopId: string;
-  role: string;
-  email: string;
+  type?: 'admin' | 'user'; // 'admin' for admin tokens, 'user' for shop user tokens
+  userId?: string;
+  shopId?: string;
+  role?: string;
+  email?: string;
+  issuedAt?: number;
 }
 
 export const generateToken = (payload: TokenPayload): string => {

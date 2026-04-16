@@ -9,9 +9,10 @@ export const usageTracker = (feature: string) => {
         return;
       }
 
-      const userId = mongoose.Types.ObjectId.isValid(req.user.userId)
-        ? new mongoose.Types.ObjectId(req.user.userId)
-        : undefined;
+      const userId =
+        req.user.userId && mongoose.Types.ObjectId.isValid(req.user.userId)
+          ? new mongoose.Types.ObjectId(req.user.userId)
+          : undefined;
 
       UsageEvent.create({
         shopId: new mongoose.Types.ObjectId(req.shopId),

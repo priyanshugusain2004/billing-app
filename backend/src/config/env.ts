@@ -41,11 +41,14 @@ export const config = {
   analytics: {
     adminKey: process.env.PLATFORM_ADMIN_KEY || '',
   },
+  admin: {
+    password: process.env.ADMIN_PASSWORD || '',
+  },
 };
 
 // Validate required env vars in production
 if (config.nodeEnv === 'production') {
-  const required = ['MONGO_URI', 'JWT_SECRET'];
+  const required = ['MONGO_URI', 'JWT_SECRET', 'ADMIN_PASSWORD'];
   const missing = required.filter(key => !process.env[key]);
   
   if (missing.length > 0) {
