@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { adminService } from '../src/services/adminApi';
 
 const AdminLoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
@@ -13,30 +14,10 @@ const AdminLoginPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
-      const response = await fetch(`${API_BASE_URL}/admin/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || 'Login failed');
-        setLoading(false);
-        return;
-      }
-
-      // Store admin token
-      localStorage.setItem('adminToken', data.token);
-      localStorage.setItem('isAdmin', 'true');
-
+      await adminService.login(password);
       navigate('/admin');
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
       setLoading(false);
     }

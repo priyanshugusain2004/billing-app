@@ -7,7 +7,7 @@ import AdminLoginPage from './pages/AdminLoginPage';
 import BillingPage from './pages/BillingPage';
 import InventoryPage from './pages/InventoryPage';
 import ReportsPage from './pages/ReportsPage';
-import PlatformAnalyticsPage from './pages/PlatformAnalyticsPage';
+import OwnerAdminPage from './pages/OwnerAdminPage';
 import Header from './components/common/Header';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import AdminRoute from './components/common/AdminRoute';
@@ -29,7 +29,7 @@ const AppContent: React.FC = () => {
                         <AdminRoute>
                             <AdminHeader />
                             <main className="p-4 sm:p-6 lg:p-8">
-                                <PlatformAnalyticsPage />
+                                <OwnerAdminPage />
                             </main>
                         </AdminRoute>
                     } />
