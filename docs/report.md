@@ -171,15 +171,15 @@ The selected stack was chosen for low operational overhead, modular extensibilit
 This report is organized to transition from business context to implementation details and validation outcomes:
 
 1. **Chapter 1** introduces the project context, motivation, objectives, scope, and technology baseline.
-1. **Chapter 2** formalizes requirement analysis and traceability.
-1. **Chapter 3** presents system architecture, module design, data modeling, and security design.
-1. **Chapter 4** discusses planning, scheduling, and project risk handling.
-1. **Chapter 5** documents input design and user interaction specifications.
-1. **Chapter 6** details output artifacts including invoice/report structures.
-1. **Chapter 7** covers technical verification (unit/integration/system testing), implementation strategy, and maintenance practices.
-1. **Chapter 8** summarizes outcomes and future scope.
-1. **Chapter 9** presents usability and field-testing methodology (pilot deployment, user acceptance observations, and field feedback metrics).
-1. **Chapter 10** defines the future roadmap and staged implementation enhancements.
+2. **Chapter 2** formalizes requirement analysis and traceability.
+3. **Chapter 3** presents system architecture, module design, data modeling, and security design.
+4. **Chapter 4** discusses planning, scheduling, and project risk handling.
+5. **Chapter 5** documents input design and user interaction specifications.
+6. **Chapter 6** details output artifacts including invoice/report structures.
+7. **Chapter 7** covers technical verification (unit/integration/system testing), implementation strategy, and maintenance practices.
+8. **Chapter 8** summarizes outcomes and future scope.
+9. **Chapter 9** presents usability and field-testing methodology (pilot deployment, user acceptance observations, and field feedback metrics).
+10. **Chapter 10** defines the future roadmap and staged implementation enhancements.
 
 In terms of emphasis, Chapters 2, 3, 5, and 7 carry the highest technical weight, while Chapters 4, 8, 9, and 10 provide managerial, evaluative, and forward-planning continuity.
 
