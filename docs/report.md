@@ -176,10 +176,12 @@ This report is organized to transition from business context to implementation d
 4. **Chapter 4** discusses planning, scheduling, and project risk handling.
 5. **Chapter 5** documents input design and user interaction specifications.
 6. **Chapter 6** details output artifacts including invoice/report structures.
-7. **Chapter 7** covers testing, implementation strategy, and maintenance practices.
+7. **Chapter 7** covers technical verification (unit/integration/system testing), implementation strategy, and maintenance practices.
 8. **Chapter 8** summarizes outcomes and future scope.
-9. **Chapter 9** presents usability and field testing plans with evaluation criteria.
+9. **Chapter 9** presents usability and field-testing methodology (pilot deployment, user acceptance observations, and field feedback metrics).
 10. **Chapter 10** defines the implementation roadmap and staged future enhancements.
+
+In terms of emphasis, Chapters 2, 3, 5, and 7 carry the highest technical weight, while Chapters 4, 8, 9, and 10 provide managerial, evaluative, and forward-planning continuity.
 
 Accordingly, the document supports both academic evaluation criteria (problem definition, methodology, technical depth, and validation) and practical industry-readiness criteria (deployability, maintainability, and extensibility).
 
