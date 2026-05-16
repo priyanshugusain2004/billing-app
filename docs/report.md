@@ -84,7 +84,7 @@ This problem includes sub-problems of data correctness, user-role isolation, off
 The project defines functional, technical, and quality objectives as shown below.
 
 | Objective ID | Objective Description | Technical Measure of Completion |
-|---|---|---|
+| --- | --- | --- |
 | OBJ-1 | Enable rapid billing for weighted and unit products | End-to-end cart-to-invoice workflow with quantity/weight handling in billing module |
 | OBJ-2 | Ensure billing accuracy under discount and tax rules | Deterministic subtotal, discount, GST, and final-total computation across invoice records |
 | OBJ-3 | Maintain inventory integrity | Stock updates synchronized with sale creation and inventory management actions |
@@ -122,7 +122,7 @@ The project scope is organized into **included scope** and **boundary limitation
 Hardware requirements are defined for two operational profiles: minimum survivable setup and recommended production setup.
 
 | Component | Minimum Requirement | Recommended Requirement | Rationale |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Processor | Dual-core 1.5 GHz | Quad-core 2.0+ GHz | Faster billing and report rendering during peak hours |
 | RAM | 2 GB | 4 GB or higher | Smooth UI performance with inventory/report screens |
 | Storage | 10 GB free | SSD with 20+ GB free | Faster app load and backup/export operations |
@@ -136,7 +136,7 @@ Hardware requirements are defined for two operational profiles: minimum survivab
 Software requirements include development dependencies and runtime/platform dependencies.
 
 | Category | Requirement | Version / Notes |
-|---|---|---|
+| --- | --- | --- |
 | Operating System | Windows / Linux / macOS | Any modern version supporting Node.js runtime |
 | Frontend Runtime | Node.js | v18+ for build and development scripts |
 | Frontend Package Manager | npm | Used for dependency installation and scripts |
@@ -153,7 +153,7 @@ Software requirements include development dependencies and runtime/platform depe
 The selected stack was chosen for low operational overhead, modular extensibility, and rapid feature iteration.
 
 | Layer | Technologies Used | Project-Specific Role |
-|---|---|---|
+| --- | --- | --- |
 | Presentation Layer | React, React Router | Role-based navigation, billing workflow UI, inventory/report interfaces |
 | Build & Tooling | Vite, TypeScript | Fast development feedback and typed codebase |
 | State & Utility | React Context, custom hooks | App-level state, localization, and reusable logic units |
