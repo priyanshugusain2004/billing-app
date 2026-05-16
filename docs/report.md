@@ -37,6 +37,7 @@ The **Gusain Billing App** is an applied software engineering project focused on
 The project adopts a practical architecture with a React-based frontend and an extensible backend layer, enabling both standalone/offline-oriented operation and future migration to multi-tenant SaaS deployment. The design objective is not merely UI automation, but operational reliability under real shop-floor conditions: low-end hardware, intermittent connectivity, mixed user skill levels, and strict time pressure during billing hours.
 
 **[Figure 1.1: Operational context of a fruit-and-vegetable billing counter (Placeholder)]**
+<!-- TODO: Insert Figure 1.1 | Suggested file: docs/images/ch1-operational-context.png | Caption approved -->
 
 ### 1.2 Project Overview
 
@@ -54,6 +55,7 @@ Gusain Billing App consists of a modular business workflow covering setup, authe
 At implementation level, the project includes a Vite + React frontend, reusable component structure, context-driven state management, and a TypeScript-based Express + MongoDB backend for scalable deployment.
 
 **[Figure 1.2: High-level architecture of frontend, backend, and data flow (Placeholder)]**
+<!-- TODO: Insert Figure 1.2 | Suggested file: docs/images/ch1-high-level-architecture.svg | Caption approved -->
 
 ### 1.3 Motivation
 
@@ -113,6 +115,7 @@ The project scope is organized into **included scope** and **boundary limitation
 - Dedicated mobile native applications (Android/iOS) beyond responsive web interface.
 
 **[Figure 1.3: Scope boundary diagram showing in-scope and out-of-scope modules (Placeholder)]**
+<!-- TODO: Insert Figure 1.3 | Suggested file: docs/images/ch1-scope-boundary.svg | Caption approved -->
 
 ### 1.7 Hardware Requirements
 
@@ -161,6 +164,7 @@ The selected stack was chosen for low operational overhead, modular extensibilit
 | Dev/Deployment | npm scripts, Vercel/Node deployment options | Frontend hosting and backend service deployment flexibility |
 
 **[Figure 1.4: Technology stack layering diagram (Placeholder)]**
+<!-- TODO: Insert Figure 1.4 | Suggested file: docs/images/ch1-tech-stack.svg | Caption approved -->
 
 ### 1.10 Organization of Report
 
@@ -174,7 +178,8 @@ This report is organized to transition from business context to implementation d
 6. **Chapter 6** details output artifacts including invoice/report structures.
 7. **Chapter 7** covers testing, implementation strategy, and maintenance practices.
 8. **Chapter 8** summarizes outcomes and future scope.
-9. **Chapter 9–10** extend usability validation and roadmap perspective.
+9. **Chapter 9** presents usability and field testing plans with evaluation criteria.
+10. **Chapter 10** defines the implementation roadmap and staged future enhancements.
 
 Accordingly, the document supports both academic evaluation criteria (problem definition, methodology, technical depth, and validation) and practical industry-readiness criteria (deployability, maintainability, and extensibility).
 
