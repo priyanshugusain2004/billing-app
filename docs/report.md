@@ -17,8 +17,8 @@
 8. Chapter 8 — Summary and Future Scope
 9. Chapter 9 — Usability & Field Testing Plan
 10. Chapter 10 — Future Roadmap
-11. References / Bibliography
-12. Appendices
+- References / Bibliography
+- Appendices
 
 ---
 
@@ -36,7 +36,7 @@ The **Gusain Billing App** is an applied software engineering project focused on
 
 The project adopts a practical architecture with a React-based frontend and an extensible backend layer, enabling both standalone/offline-oriented operation and future migration to multi-tenant SaaS deployment. The design objective is not merely UI automation, but operational reliability under real shop-floor conditions: low-end hardware, intermittent connectivity, mixed user skill levels, and strict time pressure during billing hours.
 
-**[Figure 1.1: Operational context of a fruit-and-vegetable billing counter]**
+Figure 1.1: Operational context of a fruit-and-vegetable billing counter.
 <!-- TODO: Insert Figure 1.1 | Suggested file: docs/images/ch1-operational-context.png | Caption: "Operational context of a fruit-and-vegetable billing counter" -->
 
 ### 1.2 Project Overview
@@ -54,7 +54,7 @@ Gusain Billing App consists of a modular business workflow covering setup, authe
 
 At implementation level, the project includes a Vite + React frontend, reusable component structure, context-driven state management, and a TypeScript-based Express + MongoDB backend for scalable deployment.
 
-**[Figure 1.2: High-level architecture of frontend, backend, and data flow]**
+Figure 1.2: High-level architecture of frontend, backend, and data flow.
 <!-- TODO: Insert Figure 1.2 | Suggested file: docs/images/ch1-high-level-architecture.svg | Caption: "High-level architecture of frontend, backend, and data flow" -->
 
 ### 1.3 Motivation
@@ -114,7 +114,7 @@ The project scope is organized into **included scope** and **boundary limitation
 - Enterprise-grade ERP integrations (GST return filing, accounting suite connectors) in initial release.
 - Dedicated mobile native applications (Android/iOS) beyond responsive web interface.
 
-**[Figure 1.3: Scope boundary diagram showing in-scope and out-of-scope modules]**
+Figure 1.3: Scope boundary diagram showing in-scope and out-of-scope modules.
 <!-- TODO: Insert Figure 1.3 | Suggested file: docs/images/ch1-scope-boundary.svg | Caption: "Scope boundary diagram showing in-scope and out-of-scope modules" -->
 
 ### 1.7 Hardware Requirements
@@ -163,7 +163,7 @@ The selected stack was chosen for low operational overhead, modular extensibilit
 | Data Layer | MongoDB with Mongoose models | Multi-tenant entities: Shop, User, Product, Order, Analytics |
 | Dev/Deployment | npm scripts, Vercel/Node deployment options | Frontend hosting and backend service deployment flexibility |
 
-**[Figure 1.4: Technology stack layering diagram]**
+Figure 1.4: Technology stack layering diagram.
 <!-- TODO: Insert Figure 1.4 | Suggested file: docs/images/ch1-tech-stack.svg | Caption: "Technology stack layering diagram" -->
 
 ### 1.10 Organization of Report
